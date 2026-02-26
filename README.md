@@ -1,6 +1,6 @@
-# Epidmodel Simulation — Metapopulation PINN Example
+# Metapopulation PINN Example
 
-This repository contains a worked example of a **Physics-Informed Neural Network (PINN)** for a **metapopulation SIR(+D) / SEIR(+D)** epidemic model with **unknown inter-patch movement**.  
+This repository contains a worked example of a Physics-Informed Neural Network (PINN) for a metapopulation SIR(+D) / SEIR(+D) epidemic model with unknown inter-patch movement.  
 The full workflow (simulation → training → evaluation/plots) lives in the notebook:
 
 - `metapop_model_PINN_example.ipynb`
@@ -17,11 +17,11 @@ An accompanying Conda environment file is provided:
 The notebook implements a continuous-time Markov chain simulator with deaths:
 
 - Within-patch dynamics:
-  - **SIR+D**: `S → I → R`, and `I → D`
-  - **SEIR+D**: `S → E → I → R`, and `I → D`
+  - SIR+D: `S → I → R`, and `I → D`
+  - SEIR+D: `S → E → I → R`, and `I → D`
 - Between-patch movement:
-  - Movement applies to **living compartments** (S/E/I/R).
-  - **Dead (D)** do **not** move.
+  - Movement applies to living compartments (S/E/I/R).
+  - Dead (D) do not move.
 - Movement can be:
   - `None` (no movement),
   - a constant `(P,P)` rate matrix,
@@ -47,18 +47,18 @@ The core model is implemented as a TensorFlow class:
 - `PhysicsInformedNN_Metapop`
 
 Key modeled quantities:
-- Patch-level epidemic states: **S(t), I(t), R(t), D(t)** per patch.
-- **Per-patch recovery and death rates**:
+- Patch-level epidemic states: S(t), I(t), R(t), D(t) per patch.
+- Per-patch recovery and death rates:
   - `gamma_p` (recovery), `mu_p` (death), constrained positive via `softplus`.
-- **Per-patch transmission**:
+- Per-patch transmission:
   - `beta_p(t)` (time-varying, NN head with P outputs) and/or a bounded constant β vector.
-- **Unknown movement matrix**:
-  - `M(t)` parameterized as **piecewise-constant** over `B_bins` time bins.
+- Unknown movement matrix:
+  - `M(t)` parameterized as piecewise-constant over `B_bins` time bins.
   - Nonnegative, with diagonal masked to zero.
   - Optional soft constraints/regularizers: symmetry prior, row-sum caps, max-edge caps.
 
 Fractional-order dynamics:
-- The notebook constructs **Jacobi polynomial** features and uses a residual grid to build a fractional-derivative PINN objective (as in fractional PINN formulations).
+- The notebook constructs Jacobi polynomial features and uses a residual grid to build a fractional-derivative PINN objective (as in fractional PINN formulations).
 
 Training loop:
 - Adam warmup + optional L-BFGS refinement (controlled by `LBFGS` in the training cell).
@@ -89,7 +89,7 @@ The notebook includes plotting helpers (defined in-notebook) to produce:
 
 ## Environment setup
 
-The Conda environment is defined in `EpidPINN.yml` (environment name: **`EpidSim`**). It includes both Conda and Pip-installed packages.
+The Conda environment is defined in `EpidPINN.yml` (environment name: `EpidSim`). It includes both Conda and Pip-installed packages.
 
 ### Create the Conda environment
 ```bash
@@ -114,22 +114,22 @@ conda activate EpidSim
 
 ### Full dependency list
 The YAML contains a large set of Jupyter/runtime packages. For a complete, exact list, see `EpidPINN.yml`:
-- **Conda dependencies:** 153 entries
-- **Pip dependencies:** 19 entries (includes **TensorFlow 1.15.5**)
+- Conda dependencies: 153 entries
+- Pip dependencies: 19 entries (includes TensorFlow 1.15.5)
 
-> Note: The notebook uses **TF1-style graph/session APIs** (e.g., `tf.Session`, `tf.reset_default_graph`). The provided YAML already pins a compatible TensorFlow (`tensorflow==1.15.5`) under the `pip:` section.
+> Note: The notebook uses TF1-style graph/session APIs (e.g., `tf.Session`, `tf.reset_default_graph`). The provided YAML already pins a compatible TensorFlow (`tensorflow==1.15.5`) under the `pip:` section.
 
 
 ---
 
 ## Quickstart (run the notebook end-to-end)
 
-1. **Open Jupyter**
+1. Open Jupyter
    ```bash
    jupyter notebook
    ```
 
-2. **Run `metapop_model_PINN_example.ipynb` top-to-bottom**
+2. Run `metapop_model_PINN_example.ipynb` top-to-bottom
    - Cell group 1: defines the CTMC simulator and file writers
    - Cell group 2: sets P, initial conditions, and movement; generates data into `PINN/Data/`
    - Cell group 3+: defines the PINN class, loads data, trains, exports outputs
@@ -176,5 +176,3 @@ After training, the notebook writes (at minimum):
 
 Saved under:
 - `PINN/ResultsMetapop-<MM-DD>/`
-
----
